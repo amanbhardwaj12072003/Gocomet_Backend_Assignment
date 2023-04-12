@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import BlogItem from "./BlogItem";
+import Spinner from "./Spinner";
 
 export class Blog extends Component {
   constructor() {
@@ -14,7 +15,7 @@ export class Blog extends Component {
 
   async componentDidMount() {
     const url =
-      "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=c333e89ae39a47dfaa2be2fb1888b809&page=1&pageSize=10";
+      `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=c333e89ae39a47dfaa2be2fb1888b809&page=1&pageSize=${this.props.pageSize}`;
     const data = await fetch(url);
     let parsedData = await data.json();
     // console.log(parsedData);
@@ -27,7 +28,7 @@ export class Blog extends Component {
   handlePrevClick = async () => {
     const url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=c333e89ae39a47dfaa2be2fb1888b809&page=${
       this.state.page - 1
-    }&pageSize=10`;
+    }&pageSize=${this.props.pageSize}`;
     const data = await fetch(url);
     let parsedData = await data.json();
     this.setState({
@@ -37,11 +38,11 @@ export class Blog extends Component {
   };
 
   handleNextClick = async () => {
-    if (this.state.page + 1 > Math.ceil(this.state.totalResults / 10)) {
+    if (this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)) {
     } else {
       const url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=c333e89ae39a47dfaa2be2fb1888b809&page=${
         this.state.page + 1
-      }&pageSize=10`;
+      }&pageSize=${this.props.pageSize}`;
       const data = await fetch(url);
       let parsedData = await data.json();
       this.setState({
@@ -54,7 +55,8 @@ export class Blog extends Component {
   render() {
     return (
       <div className="container my-3">
-        <h2>Wanna read interesting blogs? </h2>
+        <h1 className="text-center">Wanna read interesting blogs? </h1>
+        <Spinner />
 
         <div className="row">
           {this.state.articles.map((article) => {
@@ -87,6 +89,7 @@ export class Blog extends Component {
             type="button"
             className="btn btn-dark"
             onClick={this.handleNextClick}
+            disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)}
           >
             Next &rarr;{" "}
           </button>
