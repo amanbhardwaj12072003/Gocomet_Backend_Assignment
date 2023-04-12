@@ -14,14 +14,17 @@ export class Blog extends Component {
   }
 
   async componentDidMount() {
-    const url =
-      `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=c333e89ae39a47dfaa2be2fb1888b809&page=1&pageSize=${this.props.pageSize}`;
+    const url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=c333e89ae39a47dfaa2be2fb1888b809&page=1&pageSize=${this.props.pageSize}`;
+    this.setState({
+      loading: true,
+    });
     const data = await fetch(url);
     let parsedData = await data.json();
     // console.log(parsedData);
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
+      loading: false,
     });
   }
 
@@ -29,25 +32,37 @@ export class Blog extends Component {
     const url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=c333e89ae39a47dfaa2be2fb1888b809&page=${
       this.state.page - 1
     }&pageSize=${this.props.pageSize}`;
+    this.setState({
+      loading: true,
+    });
     const data = await fetch(url);
     let parsedData = await data.json();
     this.setState({
       articles: parsedData.articles,
       page: this.state.page - 1,
+      loading: false,
     });
   };
 
   handleNextClick = async () => {
-    if (this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)) {
-    } else {
+    if (
+      !(
+        this.state.page + 1 >
+        Math.ceil(this.state.totalResults / this.props.pageSize)
+      )
+    ) {
       const url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=c333e89ae39a47dfaa2be2fb1888b809&page=${
         this.state.page + 1
       }&pageSize=${this.props.pageSize}`;
+      this.setState({
+        loading: true,
+      });
       const data = await fetch(url);
       let parsedData = await data.json();
       this.setState({
         articles: parsedData.articles,
         page: this.state.page + 1,
+        loading: false,
       });
     }
   };
@@ -56,10 +71,10 @@ export class Blog extends Component {
     return (
       <div className="container my-3">
         <h1 className="text-center">Wanna read interesting blogs? </h1>
-        <Spinner />
+        {this.state.loading && <Spinner />}
 
         <div className="row">
-          {this.state.articles.map((article) => {
+          {!this.state.loading &&this.state.articles.map((article) => {
             return (
               <div className="col-md-4" key={article.url}>
                 <BlogItem
@@ -89,7 +104,10 @@ export class Blog extends Component {
             type="button"
             className="btn btn-dark"
             onClick={this.handleNextClick}
-            disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)}
+            disabled={
+              this.state.page + 1 >
+              Math.ceil(this.state.totalResults / this.props.pageSize)
+            }
           >
             Next &rarr;{" "}
           </button>
