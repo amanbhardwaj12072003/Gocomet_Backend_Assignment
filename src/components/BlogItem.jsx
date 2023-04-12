@@ -22,4 +22,6 @@ export class BlogItem extends Component {
   }
 }
 
+// Hello this is a git check
+
 export default BlogItem;
