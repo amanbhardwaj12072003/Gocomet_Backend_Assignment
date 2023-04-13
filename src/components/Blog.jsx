@@ -16,29 +16,38 @@ export class Blog extends Component {
     category: PropTypes.string,
   };
 
-  constructor() {
-    super();
+  capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+  constructor(props) {
+    super(props);
     console.log("I am constructor");
     this.state = {
       articles: [],
       loading: false,
       page: 1,
     };
+    document.title = `Gocomet - ${this.capitalizeFirstLetter(this.props.category)}`
   }
 
   async updateNews() {
+    this.props.setProgress(10);
     const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=c333e89ae39a47dfaa2be2fb1888b809&page=${this.state.page}&pageSize=${this.props.pageSize}`;
     this.setState({
       loading: true,
     });
     const data = await fetch(url);
+    this.props.setProgress(30);
     let parsedData = await data.json();
+    this.props.setProgress(50);
     // console.log(parsedData);
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
       loading: false,
     });
+    this.props.setProgress(100);
   }
 
   async componentDidMount() {
@@ -111,7 +120,7 @@ export class Blog extends Component {
   render() {
     return (
       <div className="container my-3">
-        <h1 className="text-center">Wanna read interesting blogs? </h1>
+        <h1 className="text-center">Wanna Read {this.capitalizeFirstLetter(this.props.category)} Blogs ? </h1>
         {this.state.loading && <Spinner />}
 
         <div className="row">
