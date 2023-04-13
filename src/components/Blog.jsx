@@ -99,6 +99,9 @@ export class Blog extends Component {
                   }
                   imageUrl={article.urlToImage}
                   blogUrl={article.url}
+                  author={article.author}
+                  date={article.publishedAt}
+                  source={article.source.name}
                 />
               </div>
             );
