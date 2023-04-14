@@ -20,9 +20,9 @@ Personal Project
 &nbsp;&nbsp;&nbsp;&nbsp;> <code>npm start</code>       
 
 ## Techstack Used
-# 1. React.JS
-# 2. NewsAPI
-# 3. Bootstrap
+### 1. React.JS
+### 2. NewsAPI
+### 3. Bootstrap
 
      
 
